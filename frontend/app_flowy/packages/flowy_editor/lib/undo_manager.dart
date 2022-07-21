@@ -109,6 +109,29 @@ class UndoManager {
       return;
     }
     final transaction = historyItem.toTransaction(s);
-    s.apply(transaction, const ApplyOptions(recordUndo: false));
+    s.apply(
+        transaction,
+        const ApplyOptions(
+          recordUndo: false,
+          recordRedo: true,
+        ));
+  }
+
+  redo() {
+    final s = state;
+    if (s == null) {
+      return;
+    }
+    final historyItem = redoStack.pop();
+    if (historyItem == null) {
+      return;
+    }
+    final transaction = historyItem.toTransaction(s);
+    s.apply(
+        transaction,
+        const ApplyOptions(
+          recordUndo: true,
+          recordRedo: false,
+        ));
   }
 }
